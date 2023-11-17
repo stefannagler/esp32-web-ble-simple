@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.2">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Courier; -webkit-text-stroke: #ffffff}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Courier; -webkit-text-stroke: #ffffff; min-height: 16.0px}
+    span.s1 {font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">&lt;!--</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>Rui Santos</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>Complete project details at https://RandomNerdTutorials.com/esp32-web-bluetooth/</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><a href="https://raw.githubusercontent.com/RuiSantosdotme/Random-Nerd-Tutorials/master/Projects/ESP32/BLE/ESP32_BLE_Notify_Receive.ino">https://raw.githubusercontent.com/RuiSantosdotme/Random-Nerd-Tutorials/master/Projects/ESP32/BLE/ESP32_BLE_Notify_Receive.ino</a></span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><a href="https://raw.githubusercontent.com/RuiSantosdotme/Random-Nerd-Tutorials/master/Projects/ESP32/BLE/Web_BLE_App/style.css">https://raw.githubusercontent.com/RuiSantosdotme/Random-Nerd-Tutorials/master/Projects/ESP32/BLE/Web_BLE_App/style.css</a></span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><a href="https://raw.githubusercontent.com/RuiSantosdotme/Random-Nerd-Tutorials/master/Projects/ESP32/BLE/Web_BLE_App/index.html">https://raw.githubusercontent.com/RuiSantosdotme/Random-Nerd-Tutorials/master/Projects/ESP32/BLE/Web_BLE_App/index.html</a></span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</span></p>
+<p class="p1"><span class="s1">--&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;title&gt;ESP32 Web BLE App&lt;/title&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;link rel="icon" type="image/png" href=""&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;body&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;h1&gt;ESP32 Web BLE Application&lt;/h1&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;button id="connectBleButton"&gt;Connect to BLE Device&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;button id="disconnectBleButton"&gt;Disconnect BLE Device&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;p&gt;BLE state: &lt;strong&gt;&lt;span id="bleState" style="color:#d13a30;"&gt;Disconnected&lt;/span&gt;&lt;/strong&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;h2&gt;Fetched Value&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;p&gt;&lt;span id="valueContainer"&gt;NaN&lt;/span&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;p&gt;Last reading: &lt;span id="timestamp"&gt;&lt;/span&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;h2&gt;Control GPIO 2&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;button id="onButton"&gt;ON&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;button id="offButton"&gt;OFF&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;p&gt;Last value sent: &lt;span id="valueSent"&gt;&lt;/span&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;p&gt;&lt;a href="https://randomnerdtutorials.com/"&gt;Created by RandomNerdTutorials.com&lt;/a&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;p&gt;&lt;a href="https://RandomNerdTutorials.com/esp32-web-bluetooth/"&gt;Read the full project here.&lt;/a&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;script&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// DOM Elements</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const connectButton = document.getElementById('connectBleButton');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const disconnectButton = document.getElementById('disconnectBleButton');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const onButton = document.getElementById('onButton');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const offButton = document.getElementById('offButton');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const retrievedValue = document.getElementById('valueContainer');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const latestValueSent = document.getElementById('valueSent');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const bleStateContainer = document.getElementById('bleState');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const timestampContainer = document.getElementById('timestamp');</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>//Define BLE Device Specs</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>var deviceName ='ESP32';</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>var bleService = '19b10000-e8f2-537e-4f6c-d104768a1214';</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>var ledCharacteristic = '19b10002-e8f2-537e-4f6c-d104768a1214';</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>var sensorCharacteristic= '19b10001-e8f2-537e-4f6c-d104768a1214';</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>//Global Variables to Handle Bluetooth</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>var bleServer;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>var bleServiceFound;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>var sensorCharacteristicFound;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Connect Button (search for BLE Devices only if BLE is available)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>connectButton.addEventListener('click', (event) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>if (isWebBluetoothEnabled()){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>connectToDevice();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Disconnect Button</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>disconnectButton.addEventListener('click', disconnectDevice);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Write to the ESP32 LED Characteristic</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>onButton.addEventListener('click', () =&gt; writeOnCharacteristic(1));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>offButton.addEventListener('click', () =&gt; writeOnCharacteristic(0));</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Check if BLE is available in your Browser</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function isWebBluetoothEnabled() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>if (!navigator.bluetooth) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.log("Web Bluetooth API is not available in this browser!");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>bleStateContainer.innerHTML = "Web Bluetooth API is not available in this browser!";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>return false</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>console.log('Web Bluetooth API supported in this browser.');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>return true</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Connect to BLE Device and Enable Notifications</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function connectToDevice(){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>console.log('Initializing Bluetooth...');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>navigator.bluetooth.requestDevice({</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>filters: [{name: deviceName}],</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>optionalServices: [bleService]</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.then(device =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.log('Device Selected:', device.name);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>bleStateContainer.innerHTML = 'Connected to device ' + device.name;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>bleStateContainer.style.color = "#24af37";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>device.addEventListener('gattservicedisconnected', onDisconnected);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>return device.gatt.connect();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.then(gattServer =&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>bleServer = gattServer;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.log("Connected to GATT Server");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>return bleServer.getPrimaryService(bleService);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.then(service =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>bleServiceFound = service;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.log("Service discovered:", service.uuid);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>return service.getCharacteristic(sensorCharacteristic);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.then(characteristic =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.log("Characteristic discovered:", characteristic.uuid);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>sensorCharacteristicFound = characteristic;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>characteristic.startNotifications();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.log("Notifications Started.");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>return characteristic.readValue();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.then(value =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.log("Read value: ", value);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const decodedValue = new TextDecoder().decode(value);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.log("Decoded value: ", decodedValue);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>retrievedValue.innerHTML = decodedValue;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.catch(error =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.log('Error: ', error);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function onDisconnected(event){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>console.log('Device Disconnected:', event.target.device.name);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>bleStateContainer.innerHTML = "Device disconnected";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>bleStateContainer.style.color = "#d13a30";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>connectToDevice();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function handleCharacteristicChange(event){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const newValueReceived = new TextDecoder().decode(event.target.value);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>console.log("Characteristic value changed: ", newValueReceived);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>retrievedValue.innerHTML = newValueReceived;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>timestampContainer.innerHTML = getDateTime();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function writeOnCharacteristic(value){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>if (bleServer &amp;&amp; bleServer.connected) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>bleServiceFound.getCharacteristic(ledCharacteristic)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>.then(characteristic =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>console.log("Found the LED characteristic: ", characteristic.uuid);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const data = new Uint8Array([value]);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>return characteristic.writeValue(data);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>.then(() =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>latestValueSent.innerHTML = value;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>console.log("Value written to LEDcharacteristic:", value);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>.catch(error =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>console.error("Error writing to the LED characteristic: ", error);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.error ("Bluetooth is not connected. Cannot write to characteristic.")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function disconnectDevice() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>console.log("Disconnect Device.");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>if (bleServer &amp;&amp; bleServer.connected) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>if (sensorCharacteristicFound) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>sensorCharacteristicFound.stopNotifications()</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>.then(() =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>console.log("Notifications Stopped");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>return bleServer.disconnect();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>.then(() =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>console.log("Device Disconnected");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>bleStateContainer.innerHTML = "Device Disconnected";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>bleStateContainer.style.color = "#d13a30";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>.catch(error =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>console.log("An error occurred:", error);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>console.log("No characteristic found to disconnect.");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// Throw an error if Bluetooth is not connected</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.error("Bluetooth is not connected.");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>window.alert("Bluetooth is not connected.")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function getDateTime() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>var currentdate = new Date();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>var day = ("00" + currentdate.getDate()).slice(-2); // Convert day to string and slice</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>var month = ("00" + (currentdate.getMonth() + 1)).slice(-2);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>var year = currentdate.getFullYear();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>var hours = ("00" + currentdate.getHours()).slice(-2);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>var minutes = ("00" + currentdate.getMinutes()).slice(-2);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>var seconds = ("00" + currentdate.getSeconds()).slice(-2);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>var datetime = day + "/" + month + "/" + year + " at " + hours + ":" + minutes + ":" + seconds;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>return datetime;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;/script&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+</body>
+</html>
